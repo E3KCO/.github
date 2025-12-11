@@ -1,0 +1,99 @@
+name: Code quality checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  black:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install black
+        run: pip install black==23.9.1
+      - name: Run black
+        run: black --line-length=88 --target-version=py310 --skip-string-normalization --check --diff .
+
+  isort:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install isort
+        run: pip install isort==5.12.0
+      - name: Run isort
+        run: isort --check-only --diff .
+
+  autoflake:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install autoflake
+        run: pip install autoflake==2.2.0
+      - name: Run autoflake
+        run: autoflake --check --remove-all-unused-imports --remove-unused-variables --ignore-init-module-imports --recursive .
+
+  flake8:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install flake8
+        run: pip install flake8==6.0.0
+      - name: Run flake8
+        run: flake8 --max-line-length=88 --exclude=__init__.py .
+
+  pylint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install pylint
+        run: pip install pylint
+      - name: Run pylint check
+        run: python .github/scripts/run_pylint_if_compatible.py --rcfile=.pylintrc.ini
+
+  check-author:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Check manifest author
+        run: python .github/scripts/check_author.py
+
+  check-field-prefix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Check Odoo field prefix
+        run: python .github/scripts/check-field-prefix.py
+
+  check-version-format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Check manifest version format
+        run: python .github/scripts/check_manifest_version.py
