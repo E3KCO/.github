@@ -60,40 +60,60 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Checkout .github repo for scripts
+        uses: actions/checkout@v3
+        with:
+          repository: E3KCO/.github
+          path: .github-central
       - uses: actions/setup-python@v4
         with:
           python-version: '3.11'
       - name: Install pylint
         run: pip install pylint
       - name: Run pylint check
-        run: python .github/scripts/run_pylint_if_compatible.py --rcfile=.pylintrc.ini
+        run: python .github-central/.github/scripts/run_pylint_if_compatible.py --rcfile=.pylintrc.ini
 
   check-author:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Checkout .github repo for scripts
+        uses: actions/checkout@v3
+        with:
+          repository: E3KCO/.github
+          path: .github-central
       - uses: actions/setup-python@v4
         with:
           python-version: '3.11'
       - name: Check manifest author
-        run: python .github/scripts/check_author.py
+        run: python .github-central/.github/scripts/check_author.py
 
   check-field-prefix:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Checkout .github repo for scripts
+        uses: actions/checkout@v3
+        with:
+          repository: E3KCO/.github
+          path: .github-central
       - uses: actions/setup-python@v4
         with:
           python-version: '3.11'
       - name: Check Odoo field prefix
-        run: python .github/scripts/check-field-prefix.py
+        run: python .github-central/.github/scripts/check-field-prefix.py
 
   check-version-format:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Checkout .github repo for scripts
+        uses: actions/checkout@v3
+        with:
+          repository: E3KCO/.github
+          path: .github-central
       - uses: actions/setup-python@v4
         with:
           python-version: '3.11'
       - name: Check manifest version format
-        run: python .github/scripts/check_manifest_version.py
+        run: python .github-central/.github/scripts/check_manifest_version.py
