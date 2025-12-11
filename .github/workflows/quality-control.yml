@@ -71,7 +71,7 @@ jobs:
       - name: Install pylint
         run: pip install pylint
       - name: Run pylint check
-        run: python .github-central/.github/scripts/run_pylint_if_compatible.py --rcfile=.pylintrc.ini
+        run: python .github-central/.github/scripts/run_pylint_if_compatible.py --rcfile=.github-central/.pylintrc.ini
 
   check-author:
     runs-on: ubuntu-latest
