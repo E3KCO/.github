@@ -1,0 +1,14 @@
+name: Code quality checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  e3k-default-qc:
+    uses: E3KCO/.github/workflows/quality-control.yml@main
+    with:
+      python-version: '3.11'

@@ -1,0 +1,37 @@
+name: Code quality checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  pre-commit:
+    name: quality-control-hooks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ inputs.python-version }}
+
+      - name: Install Python dependencies
+        run: |
+          if [ -f requirements.txt ]; then
+            echo "Installing from requirements.txt"
+            pip install --upgrade pip
+            pip install -r requirements.txt
+          else
+            echo "requirements.txt not found, installing manually"
+            pip install --upgrade pip
+            pip install pre-commit pylint pylint-odoo
+          fi
+
+      - name: Run pre-commit
+        run: pre-commit run --all-files
