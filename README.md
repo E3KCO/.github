@@ -173,7 +173,7 @@ class ResPartner(models.Model):
 # ❌ Invalid versions
 "version": "1.0"      # Missing patch number
 "version": "v1.0.0"   # Has 'v' prefix
-"version": "1.0.0-rc" # Has suffix
+"version": "19.0.1.0.0" # Has Odoo major version
 ```
 
 ---
