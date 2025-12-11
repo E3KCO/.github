@@ -1,14 +1,14 @@
 name: Code quality checks
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches:
-      - main
+  workflow_call:
+    inputs:
+      python-version:
+        required: true
+        type: string
 
 jobs:
-  pre-commit:
+  e3k-default-qc:
     name: quality-control-hooks
     runs-on: ubuntu-latest
 
