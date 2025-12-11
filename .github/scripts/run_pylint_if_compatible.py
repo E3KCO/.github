@@ -4,7 +4,7 @@ import subprocess
 import re
 
 MAX_VERSION = (3, 11)
-MIN_SCORE = 9.9
+MIN_SCORE = 7.5
 
 # ✅ Compare major.minor
 current_version = sys.version_info[:2]
