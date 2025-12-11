@@ -4,14 +4,12 @@ import subprocess
 
 MAX_VERSION = (3, 11)
 
-# ✅ Compare seulement major.minor
+# ✅ Compare major.minor
 current_version = sys.version_info[:2]
 
 if current_version <= MAX_VERSION:
-    command = [
-        "pylint",
-        "--rcfile=.pre-commit-hooks/.pylintrc.ini",
-    ] + sys.argv[1:]
+    # Build command: start with pylint, add args from command line
+    command = ["pylint"] + sys.argv[1:]
 
     print("[INFO] Running:", " ".join(command))
     result = subprocess.run(command)

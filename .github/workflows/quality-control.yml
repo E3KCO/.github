@@ -71,7 +71,7 @@ jobs:
       - name: Install pylint and pylint-odoo
         run: pip install pylint pylint-odoo
       - name: Run pylint check
-        run: python .github-central/.github/scripts/run_pylint_if_compatible.py --rcfile=.github-central/.pylintrc.ini
+        run: python .github-central/.github/scripts/run_pylint_if_compatible.py --rcfile=.github-central/.pylintrc.ini $(find . -name "*.py" -not -path "./.github-central/*" -not -path "./venv/*" -not -path "./env/*" | tr '\n' ' ')
 
   check-author:
     runs-on: ubuntu-latest
