@@ -3,9 +3,11 @@ import re
 import sys
 import ast
 from pathlib import Path
+from utils import is_e3k_module
 
 # Regex for x.y.z format (e.g.: 1.2.3)
 VERSION_REGEX = r'^\d+\.\d+\.\d+$'
+
 
 def validate_version_format(file_path):
     """
@@ -30,6 +32,7 @@ def validate_version_format(file_path):
         print(f"[WARNING] {file_path}: Failed to parse manifest: {e}")
         return False
 
+
 def main():
     """
     Main entry point of the script.
@@ -38,10 +41,15 @@ def main():
     failed = False
     for file in sys.argv[1:]:
         path = Path(file)
-        if path.name == "__manifest__.py" and "e3k_" in path.parts[-2]:  # parent folder contains e3k_
+        if path.name == "__manifest__.py":
+            if not is_e3k_module(path):
+                print(f"[INFO] Skipping non-e3k module: {path.parent.name}")
+                continue
+
             if not validate_version_format(path):
                 failed = True
     sys.exit(1 if failed else 0)
+
 
 if __name__ == "__main__":
     main()
