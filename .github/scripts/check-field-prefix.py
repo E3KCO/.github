@@ -2,6 +2,14 @@ import sys
 import re
 from utils import is_e3k_module
 
+# Liste des champs autorisés sans préfixe e3k_
+ALLOWED_FIELDS_WITHOUT_PREFIX = {
+    'name',
+    'display_name',
+    'create_date',
+    'write_date',
+}
+
 def is_model_inherited(lines):
     return any(re.search(r"_inherit\s*=\s*['\"]", line) for line in lines)
 
@@ -26,6 +34,8 @@ def check_field_prefix(file_path):
             field_name = match.group(1)
             if field_name.startswith("_"):
                 continue  # ignorer champs internes
+            if field_name in ALLOWED_FIELDS_WITHOUT_PREFIX:
+                continue  # ignorer champs autorisés
             if not field_name.lower().startswith("e3k_"):
                 errors.append(
                     f"{file_path}:{i+1} - Champ '{field_name}' doit commencer par 'e3k_' (ou ajouter # no-check)"
