@@ -9,6 +9,6 @@ on:
 
 jobs:
   e3k-default-qc:
-    uses: E3KCO/.github/.github/workflows/quality-control.yml@main
+    uses: E3KCO/github-workflows/.github/workflows/quality-control.yml@main
     with:
       python-version: '3.11'

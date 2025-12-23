@@ -1,0 +1,11 @@
+name: e3kBot Generate Index
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  generate-index:
+    uses: E3KCO/github-workflows/.github/workflows/e3kbot-generate-index.yml@main
+    secrets:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
