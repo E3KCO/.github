@@ -1,4 +1,4 @@
-name: Code quality checks
+name: QC/QA Checks
 
 on:
   pull_request:
@@ -8,10 +8,22 @@ on:
       - master
 
 jobs:
-  e3k-default-qc:
+  quality-control:
     uses: E3KCO/github-workflows/.github/workflows/quality-control.yml@main
     with:
       python-version: '3.11'
     secrets:
       APP_ID: ${{ secrets.E3KAPP_ID }}
       APP_PRIVATE_KEY: ${{ secrets.E3KAPP_PRIVATE_KEY }}
+
+  claude-code-review:
+    needs: quality-control
+    uses: E3KCO/github-workflows/.github/workflows/claude-code-review.yml@main
+    secrets:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+  e3kbot-generate-index:
+    needs: claude-code-review
+    uses: E3KCO/github-workflows/.github/workflows/e3kbot-generate-index.yml@main
+    secrets:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}

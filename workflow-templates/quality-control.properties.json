@@ -1,7 +1,6 @@
 {
   "name": "Code Quality Control Workflow",
   "description": "Automated code quality checks using pre-commit hooks for Odoo projects",
-  "iconName": "octicon-package",
-  "categories": ["Python", "Code Quality", "CI/CD"],
-  "filePatterns": ["requirements.txt", "*.py", ".pre-commit-config.yaml"]
+  "iconName": "octicon check-circle-fill",
+  "categories": ["Python", "Code Quality", "CI/CD"]
 }
