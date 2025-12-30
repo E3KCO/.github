@@ -1,14 +1,17 @@
 name: Code quality checks
 
 on:
-  push:
-    branches: [main]
   pull_request:
+    types: [opened, synchronize]
     branches:
       - main
+      - master
 
 jobs:
   e3k-default-qc:
     uses: E3KCO/github-workflows/.github/workflows/quality-control.yml@main
     with:
       python-version: '3.11'
+    secrets:
+      APP_ID: ${{ secrets.E3KAPP_ID }}
+      APP_PRIVATE_KEY: ${{ secrets.E3KAPP_PRIVATE_KEY }}
