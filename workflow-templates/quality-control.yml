@@ -4,8 +4,7 @@ on:
   pull_request:
     types: [opened, synchronize]
     branches:
-      - main
-      - master
+      - $default-branch
 
 jobs:
   quality-control:
@@ -27,3 +26,5 @@ jobs:
     uses: E3KCO/github-workflows/.github/workflows/e3kbot-generate-index.yml@main
     secrets:
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      APP_ID: ${{ secrets.E3KAPP_ID }}
+      APP_PRIVATE_KEY: ${{ secrets.E3KAPP_PRIVATE_KEY }}
