@@ -6,7 +6,10 @@ on:
 
 jobs:
   quality-control:
-    if: github.event.pull_request.base.ref == github.event.repository.default_branch
+    name: quality-control
+    if: |
+      github.event.pull_request.base.ref == github.event.repository.default_branch &&
+      github.actor != 'github-actions[bot]'
     uses: E3KCO/github-workflows/.github/workflows/quality-control.yml@main
     with:
       python-version: '3.11'
@@ -15,17 +18,47 @@ jobs:
       APP_PRIVATE_KEY: ${{ secrets.E3KAPP_PRIVATE_KEY }}
 
   claude-code-review:
-    if: github.event.pull_request.base.ref == github.event.repository.default_branch
+    name: claude-code-review
+    if: |
+      github.event.pull_request.base.ref == github.event.repository.default_branch &&
+      github.actor != 'github-actions[bot]'
     needs: quality-control
     uses: E3KCO/github-workflows/.github/workflows/claude-code-review.yml@main
     secrets:
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
 
   e3kbot-generate-index:
-    if: github.event.pull_request.base.ref == github.event.repository.default_branch
+    name: e3kbot-generate-index
+    if: |
+      github.event.pull_request.base.ref == github.event.repository.default_branch &&
+      github.actor != 'github-actions[bot]'
     needs: claude-code-review
     uses: E3KCO/github-workflows/.github/workflows/e3kbot-generate-index.yml@main
     secrets:
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
       APP_ID: ${{ secrets.E3KAPP_ID }}
       APP_PRIVATE_KEY: ${{ secrets.E3KAPP_PRIVATE_KEY }}
+
+  qc-gate:
+    name: qc-gate
+    runs-on: ubuntu-latest
+    needs:
+      - quality-control
+      - claude-code-review
+      - e3kbot-generate-index
+    if: |
+      always() &&
+      github.event.pull_request.base.ref == github.event.repository.default_branch
+    steps:
+      - name: Enforce quality-control only
+        run: |
+          echo "quality-control: ${{ needs.quality-control.result }}"
+          echo "claude-code-review: ${{ needs.claude-code-review.result }}"
+          echo "e3kbot-generate-index: ${{ needs.e3kbot-generate-index.result }}"
+
+          if [ "${{ needs.quality-control.result }}" != "success" ]; then
+            echo "❌ quality-control is required to pass"
+            exit 1
+          fi
+
+          echo "✅ quality-control passed (other jobs are advisory)"
