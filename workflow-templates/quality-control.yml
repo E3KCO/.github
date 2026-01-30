@@ -9,7 +9,8 @@ jobs:
     name: quality-control
     if: |
       github.event.pull_request.base.ref == github.event.repository.default_branch &&
-      github.actor != 'github-actions[bot]'
+      github.actor != 'github-actions[bot]' &&
+      github.actor != 'e3k-workflows[bot]'
     uses: E3KCO/github-workflows/.github/workflows/quality-control.yml@main
     with:
       python-version: '3.11'
@@ -21,7 +22,8 @@ jobs:
     name: claude-code-review
     if: |
       github.event.pull_request.base.ref == github.event.repository.default_branch &&
-      github.actor != 'github-actions[bot]'
+      github.actor != 'github-actions[bot]' &&
+      github.actor != 'e3k-workflows[bot]'
     needs: quality-control
     uses: E3KCO/github-workflows/.github/workflows/claude-code-review.yml@main
     secrets:
@@ -31,7 +33,8 @@ jobs:
     name: e3kbot-generate-index
     if: |
       github.event.pull_request.base.ref == github.event.repository.default_branch &&
-      github.actor != 'github-actions[bot]'
+      github.actor != 'github-actions[bot]' &&
+      github.actor != 'e3k-workflows[bot]'
     needs: claude-code-review
     uses: E3KCO/github-workflows/.github/workflows/e3kbot-generate-index.yml@main
     secrets:
@@ -56,9 +59,18 @@ jobs:
           echo "claude-code-review: ${{ needs.claude-code-review.result }}"
           echo "e3kbot-generate-index: ${{ needs.e3kbot-generate-index.result }}"
 
-          if [ "${{ needs.quality-control.result }}" != "success" ]; then
-            echo "❌ quality-control is required to pass"
+          # Si le push vient du bot e3k-workflows, les jobs sont skippés
+          # On considère que le QC-gate passe si quality-control était success OU skipped
+          QC_RESULT="${{ needs.quality-control.result }}"
+
+          if [ "$QC_RESULT" == "success" ]; then
+            echo "✅ quality-control passed"
+            exit 0
+          elif [ "$QC_RESULT" == "skipped" ]; then
+            echo "⏭️ quality-control was skipped (bot push)"
+            echo "✅ qc-gate passes (bot commits are trusted)"
+            exit 0
+          else
+            echo "❌ quality-control is required to pass (status: $QC_RESULT)"
             exit 1
           fi
-
-          echo "✅ quality-control passed (other jobs are advisory)"
