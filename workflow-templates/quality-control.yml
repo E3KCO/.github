@@ -38,6 +38,7 @@ jobs:
       github.actor != 'github-actions[bot]' &&
       github.actor != 'e3k-workflows[bot]' &&
       vars.E3KBOT_GENERATE_INDEX_ENABLED != 'false' &&
+      needs.quality-control.result == 'success' &&
       (vars.CLAUDE_CODE_REVIEW_ENABLED == 'false' || vars.CLAUDE_CODE_REVIEW_ENABLED == '' || needs.claude-code-review.result == 'success')
     needs:
       - quality-control
